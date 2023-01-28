@@ -153,9 +153,9 @@ retrylabel:
     if (!int.TryParse(input[1], out int y))
         goto retry;
     y--;
-    if (!x.inRange(0, 2))
+    if (!x.inRange(0, BoardWidth - 1))
         goto retry;
-    if (!y.inRange(0, 2))
+    if (!y.inRange(0, BoardHeight - 1))
         goto retry;
     if (board[x,y].owner != none)
         goto retry;

@@ -8,28 +8,51 @@
 //Extra haastetta on, tekeminen ai-vihollinen pelaajalle, ja/tai asetuksia pelille.
 
 using Pastel;
-using System.Net.Http.Headers;
 using Tic_Tac_Toe;
 using ExtensionMethods;
+using System.Net.Sockets;
+using System.Net;
+using System.Text;
+using System.Net.Http.Headers;
 
-int BoardWidth = 3;
-int BoardHeight = 3;
-bool game = true;
-player none = new player(ConsoleColor.White, ' ');
-player[] Players = new player[]
+retry2:
+string nettype = Read("Host or Client?").ToUpper();
+TcpClient client;
+if (nettype.StartsWith("HOST"))
 {
-    new player(ConsoleColor.Red, 'X'),
-    new player(ConsoleColor.Yellow, 'O')
-};
-
+    TcpListener listener = new TcpListener(IPAddress.Any, int.Parse(Read("Please Input a port")));
+    listener.Start();
+    client = listener.AcceptTcpClient();
+    Console.WriteLine("Connection Established");
+}
+else if (nettype.StartsWith("CLIENT"))
+{
+    client = new TcpClient(Read("Please input ip"), int.Parse(Read("Please Input Port")));
+    Console.WriteLine("Connection Established");
+}
+else
+    goto retry2;
+NetworkStream stream = client.GetStream();
+int BoardWidth = 9;
+int BoardHeight = 9;
+bool game = true;
 spot[,] board = new spot[BoardWidth, BoardHeight];
-
+player none = new player(ConsoleColor.White, ' ');
 for (int x = 0; x < BoardWidth; x++)
 {
     for(int y = 0; y < BoardHeight; y++)
     {
         board[x, y] = new spot(none);
     }
+}
+player[] Players = new player[]
+{
+    new player(ConsoleColor.Red,    'R', board[0,0]),
+    new player(ConsoleColor.Yellow, 'Y', board[BoardWidth-1,BoardHeight-1])
+};
+for(int i = 0; i < Players.Length; i++)
+{
+    Players[i].capital.owner = Players[i];
 }
 
 int move = 0;
@@ -40,7 +63,11 @@ while (game)
     {
         move++;
         draw(Players[i]);
-        spot pos = getInput();
+        spot pos;
+        if (nettype == "HOST")
+            pos = getOnlineInput(stream);
+        else
+            pos = getInput();
         pos.owner = Players[i];
         player? win = Winner();
         if(win != null)
@@ -96,6 +123,21 @@ player? Winner()
         return board[1, 1].owner;
     return null;
 }
+spot getOnlineInput(Stream stream)
+{
+    retry:
+    byte[] data = new byte[1024];
+    int bytesread = stream.Read(data, 0, data.Length);
+    string? trueInput = Encoding.ASCII.GetString(data, 0, bytesread);
+    string[] input = trueInput.Split(' ');
+    if (!int.TryParse(input[0], out int x))
+        goto retry;
+    x--;
+    if (!int.TryParse(input[1], out int y))
+        goto retry;
+    y--;
+    return board[x, y];
+}
 spot getInput()
 {
 retrylabel:
@@ -143,4 +185,10 @@ void draw(player? player = null)
         }
         Console.Write('\n');
     }
+}
+string? Read(string message = "")
+{
+    if (message != "")
+        Console.WriteLine(message);
+    return Console.ReadLine();
 }

@@ -118,7 +118,7 @@ player? Winner()
     //    return board[1,1].owner;
     //if (board[2, 0].owner != none && board[2, 0].owner == board[1, 1].owner && board[1, 1].owner == board[0, 2].owner)
     //    return board[1, 1].owner;
-    player? res = CheckForLineOfSameOwner(board, BoardWidth, BoardHeight, 3);
+    player? res = CheckForLineOfSameOwner(board, BoardWidth, BoardHeight, 5);
     return res;
     player? CheckForLineOfSameOwner(spot[,] spots, int boardWidth, int boardHeight, int lineLength)
     {

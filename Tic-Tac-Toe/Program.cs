@@ -87,41 +87,41 @@ Console.WriteLine(end);
 player? Winner()
 {
     //rows
-    for(int y = 0; y < BoardHeight; y++)
-    {
-        bool isOver = true;
-        player cur = board[0,y].owner;
-        if (cur == none)
-            continue;
-        for(int x = 0; x < BoardWidth; x++)
-        {
-            if (board[x,y].owner != cur)
-                isOver = false;
-        }
-        if(isOver)
-            return cur;
-    }
-    //columns
-    for (int x = 0; x < BoardWidth; x++)
-    {
-        bool isOver = true;
-        player cur = board[x, 0].owner;
-        if (cur == none)
-            continue;
-        for (int y = 0; y < BoardHeight; y++)
-        {
-            if (board[x, y].owner != cur)
-                isOver = false;
-        }
-        if (isOver)
-            return cur;
-    }
-    //diagonals TODO: make dynamic, aka make work with any size
-    if (board[0, 0].owner != none && board[0, 0].owner == board[1, 1].owner && board[1, 1].owner == board[2, 2].owner)
-        return board[1,1].owner;
-    if (board[2, 0].owner != none && board[2, 0].owner == board[1, 1].owner && board[1, 1].owner == board[0, 2].owner)
-        return board[1, 1].owner;
-    return null;
+    //for(int y = 0; y < BoardHeight; y++)
+    //{
+    //    bool isOver = true;
+    //    player cur = board[0,y].owner;
+    //    if (cur == none)
+    //        continue;
+    //    for(int x = 0; x < BoardWidth; x++)
+    //    {
+    //        if (board[x,y].owner != cur)
+    //            isOver = false;
+    //    }
+    //    if(isOver)
+    //        return cur;
+    //}
+    ////columns
+    //for (int x = 0; x < BoardWidth; x++)
+    //{
+    //    bool isOver = true;
+    //    player cur = board[x, 0].owner;
+    //    if (cur == none)
+    //        continue;
+    //    for (int y = 0; y < BoardHeight; y++)
+    //    {
+    //        if (board[x, y].owner != cur)
+    //            isOver = false;
+    //    }
+    //    if (isOver)
+    //        return cur;
+    //}
+    ////diagonals TODO: make dynamic, aka make work with any size
+    //if (board[0, 0].owner != none && board[0, 0].owner == board[1, 1].owner && board[1, 1].owner == board[2, 2].owner)
+    //    return board[1,1].owner;
+    //if (board[2, 0].owner != none && board[2, 0].owner == board[1, 1].owner && board[1, 1].owner == board[0, 2].owner)
+    //    return board[1, 1].owner;
+    return CheckForLineOfSameOwner(board,BoardWidth, BoardHeight, 3);
     player? CheckForLineOfSameOwner(spot[,] spots, int boardWidth, int boardHeight, int lineLength)
     {
         // Check rows

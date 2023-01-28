@@ -122,6 +122,95 @@ player? Winner()
     if (board[2, 0].owner != none && board[2, 0].owner == board[1, 1].owner && board[1, 1].owner == board[0, 2].owner)
         return board[1, 1].owner;
     return null;
+    player? CheckForLineOfSameOwner(spot[,] spots, int boardWidth, int boardHeight, int lineLength)
+    {
+        // Check rows
+        for (int row = 0; row < boardHeight; row++)
+        {
+            for (int col = 0; col < boardWidth - lineLength + 1; col++)
+            {
+                bool sameOwner = true;
+                for (int i = 1; i < lineLength; i++)
+                {
+                    if (spots[row, col].owner != spots[row, col + i].owner)
+                    {
+                        sameOwner = false;
+                        break;
+                    }
+                }
+                if (sameOwner)
+                {
+                    return spots[row, col].owner;
+                }
+            }
+        }
+
+        // Check columns
+        for (int col = 0; col < boardWidth; col++)
+        {
+            for (int row = 0; row < boardHeight - lineLength + 1; row++)
+            {
+                bool sameOwner = true;
+                for (int i = 1; i < lineLength; i++)
+                {
+                    if (spots[row, col].owner != spots[row + i, col].owner)
+                    {
+                        sameOwner = false;
+                        break;
+                    }
+                }
+                if (sameOwner)
+                {
+                    return spots[row, col].owner;
+                }
+            }
+        }
+
+        // Check diagonal from top-left to bottom-right
+        for (int row = 0; row < boardHeight - lineLength + 1; row++)
+        {
+            for (int col = 0; col < boardWidth - lineLength + 1; col++)
+            {
+                bool sameOwner = true;
+                for (int i = 1; i < lineLength; i++)
+                {
+                    if (spots[row, col].owner != spots[row + i, col + i].owner)
+                    {
+                        sameOwner = false;
+                        break;
+                    }
+                }
+                if (sameOwner)
+                {
+                    return spots[row, col].owner;
+                }
+            }
+        }
+
+        // Check diagonal from top-right to bottom-left
+        for (int row = 0; row < boardHeight - lineLength + 1; row++)
+        {
+            for (int col = lineLength - 1; col < boardWidth; col++)
+            {
+                bool sameOwner = true;
+                for (int i = 1; i < lineLength; i++)
+                {
+                    if (spots[row, col].owner != spots[row + i, col - i].owner)
+                    {
+                        sameOwner = false;
+                        break;
+                    }
+                }
+                if (sameOwner)
+                {
+                    return spots[row, col].owner;
+                }
+            }
+        }
+
+        return null;
+    }
+
 }
 spot getOnlineInput(Stream stream)
 {

@@ -24,18 +24,10 @@ namespace Tic_Tac_Toe
     {
         public ConsoleColor color;
         public char character;
-        public spot capital;
-        public player(ConsoleColor color, char character, spot capital)
-        {
-            this.color = color;
-            this.character = character;
-            this.capital = capital;
-        }
         public player(ConsoleColor color, char character)
         {
             this.color = color;
             this.character = character;
-            this.capital = capital;
         }
     }
 }

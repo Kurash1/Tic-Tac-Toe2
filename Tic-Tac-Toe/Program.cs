@@ -29,13 +29,9 @@ for (int x = 0; x < BoardWidth; x++)
 }
 player[] Players = new player[]
 {
-    new player(ConsoleColor.Red,    'R', board[0,0]),
-    new player(ConsoleColor.Yellow, 'Y', board[BoardWidth-1,BoardHeight-1])
+    new player(ConsoleColor.Red,    'R'),
+    new player(ConsoleColor.Yellow, 'Y')
 };
-for(int i = 0; i < Players.Length; i++)
-{
-    Players[i].capital.owner = Players[i];
-}
 
 retry2:
 string nettype = Read("Host or Client?").ToUpper();

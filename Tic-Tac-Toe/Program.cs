@@ -64,7 +64,7 @@ while (game)
         move++;
         draw(Players[i]);
         spot pos;
-        if (nettype == "HOST")
+        if ((nettype == "HOST" && i == 0) || (nettype == "CLIENT" && i == 1))
             pos = getOnlineInput(stream);
         else
             pos = getInput();
@@ -159,6 +159,8 @@ retrylabel:
         goto retry;
     if (board[x,y].owner != none)
         goto retry;
+    byte[] data = Encoding.ASCII.GetBytes(trueInput);
+    stream.Write(data, 0, data.Length);
     return board[x, y];
 retry:
     Console.WriteLine("Invalid, Please Retry");

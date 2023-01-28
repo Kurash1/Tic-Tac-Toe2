@@ -15,24 +15,6 @@ using System.Net;
 using System.Text;
 using System.Net.Http.Headers;
 
-retry2:
-string nettype = Read("Host or Client?").ToUpper();
-TcpClient client;
-if (nettype.StartsWith("HOST"))
-{
-    TcpListener listener = new TcpListener(IPAddress.Any, int.Parse(Read("Please Input a port")));
-    listener.Start();
-    client = listener.AcceptTcpClient();
-    Console.WriteLine("Connection Established");
-}
-else if (nettype.StartsWith("CLIENT"))
-{
-    client = new TcpClient(Read("Please input ip"), int.Parse(Read("Please Input Port")));
-    Console.WriteLine("Connection Established");
-}
-else
-    goto retry2;
-NetworkStream stream = client.GetStream();
 int BoardWidth = 9;
 int BoardHeight = 9;
 bool game = true;
@@ -54,6 +36,25 @@ for(int i = 0; i < Players.Length; i++)
 {
     Players[i].capital.owner = Players[i];
 }
+
+retry2:
+string nettype = Read("Host or Client?").ToUpper();
+TcpClient client;
+if (nettype.StartsWith("HOST"))
+{
+    TcpListener listener = new TcpListener(IPAddress.Any, int.Parse(Read("Please Input a port")));
+    listener.Start();
+    client = listener.AcceptTcpClient();
+    Console.WriteLine("Connection Established");
+}
+else if (nettype.StartsWith("CLIENT"))
+{
+    client = new TcpClient(Read("Please input ip"), int.Parse(Read("Please Input Port")));
+    Console.WriteLine("Connection Established");
+}
+else
+    goto retry2;
+NetworkStream stream = client.GetStream();
 
 int move = 0;
 string end = "";
@@ -121,98 +122,98 @@ player? Winner()
     //    return board[1,1].owner;
     //if (board[2, 0].owner != none && board[2, 0].owner == board[1, 1].owner && board[1, 1].owner == board[0, 2].owner)
     //    return board[1, 1].owner;
-    player res = CheckForLineOfSameOwner(board,BoardWidth, BoardHeight, 3);
-    if (res == none)
-        return null;
+    player? res = CheckForLineOfSameOwner(board, BoardWidth, BoardHeight, 3);
     return res;
     player? CheckForLineOfSameOwner(spot[,] spots, int boardWidth, int boardHeight, int lineLength)
     {
         // Check rows
-        for (int row = 0; row < boardHeight; row++)
+        for (int x = 0; x < boardWidth; x++)
         {
-            for (int col = 0; col < boardWidth - lineLength + 1; col++)
+            for (int y = 0; y < boardHeight - lineLength + 1; y++)
             {
                 bool sameOwner = true;
                 for (int i = 0; i < lineLength; i++)
                 {
-                    if (spots[row, col].owner != spots[row, col + i].owner)
+                    if (spots[x, y].owner != spots[x, y + i].owner)
                     {
                         sameOwner = false;
                         break;
                     }
                 }
-                if (sameOwner)
+                if (sameOwner && spots[x, y].owner != none)
                 {
-                    return spots[row, col].owner;
+                    return spots[x, y].owner;
                 }
             }
         }
 
         // Check columns
-        for (int col = 0; col < boardWidth; col++)
+        for (int y = 0; y < boardHeight; y++)
         {
-            for (int row = 0; row < boardHeight - lineLength + 1; row++)
+            for (int x = 0; x < boardWidth - lineLength + 1; x++)
             {
                 bool sameOwner = true;
                 for (int i = 0; i < lineLength; i++)
                 {
-                    if (spots[row, col].owner != spots[row + i, col].owner)
+                    if (spots[x, y].owner != spots[x + i, y].owner)
                     {
                         sameOwner = false;
                         break;
                     }
                 }
-                if (sameOwner)
+                if (sameOwner && spots[x, y].owner != none)
                 {
-                    return spots[row, col].owner;
+                    return spots[x, y].owner;
                 }
             }
         }
 
         // Check diagonal from top-left to bottom-right
-        for (int row = 0; row < boardHeight - lineLength + 1; row++)
+        for (int x = 0; x < boardWidth - lineLength + 1; x++)
         {
-            for (int col = 0; col < boardWidth - lineLength + 1; col++)
+            for (int y = 0; y < boardHeight - lineLength + 1; y++)
             {
                 bool sameOwner = true;
                 for (int i = 0; i < lineLength; i++)
                 {
-                    if (spots[row, col].owner != spots[row + i, col + i].owner)
+                    if (spots[x, y].owner != spots[x + i, y + i].owner)
                     {
                         sameOwner = false;
                         break;
                     }
                 }
-                if (sameOwner)
+                if (sameOwner && spots[x, y].owner != none)
                 {
-                    return spots[row, col].owner;
+                    return spots[x, y].owner;
                 }
             }
         }
 
         // Check diagonal from top-right to bottom-left
-        for (int row = 0; row < boardHeight - lineLength + 1; row++)
+        for (int x = 0; x < boardWidth - lineLength + 1; x++)
         {
-            for (int col = lineLength - 1; col < boardWidth; col++)
+            for (int y = lineLength - 1; y < boardHeight; y++)
             {
                 bool sameOwner = true;
                 for (int i = 0; i < lineLength; i++)
                 {
-                    if (spots[row, col].owner != spots[row + i, col - i].owner)
+                    if (spots[x, y].owner != spots[x + i, y - i].owner)
                     {
                         sameOwner = false;
                         break;
                     }
                 }
-                if (sameOwner)
+                if (sameOwner && spots[x, y].owner != none)
                 {
-                    return spots[row, col].owner;
+                    return spots[x, y].owner;
                 }
             }
         }
 
         return null;
     }
+
+
 
 }
 spot getOnlineInput(Stream stream)
